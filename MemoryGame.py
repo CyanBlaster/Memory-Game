@@ -4,6 +4,7 @@ import datetime
 import math
 import pygame.freetype
 import random
+import time
 
 pygame.init()
 
@@ -11,6 +12,24 @@ GAME_FONT = pygame.freetype.Font("Oswald-VariableFont_wght.ttf", 80)
 
 def ZeroField(n):
     return [[0] * n for i in range(n)]
+
+
+
+def MemoryRandomizer(cellAmount, map):
+    for i in range(cellAmount * 5):
+        x = random.randint(0, 9)
+        y = random.randint(0, 9)     
+        while(map[x][y] != 0):
+            x = random.randint(0, 9)
+            y = random.randint(0, 9)
+        map[x][y] = i
+        X = random.randint(0, 9)
+        Y = random.randint(0, 9)     
+        while(map[X][Y] != 0):
+            X = random.randint(0, 9)
+            Y = random.randint(0, 9)
+        map[X][Y] = i
+    return map
 
 def main():
     width = 800
@@ -21,15 +40,17 @@ def main():
     xIdx = 0
     yIdx = 0
     selector = False
-    selectX = 0
-    selectY = 0
+    selectedX = -1
+    selectedY = -1
+    selectedx = -1
+    selectedy = -1
+    cheats = False
 
     screen = pygame.display.set_mode((width, height))
     running = True
-    map = ZeroField(cellAmount)
+    # map = ZeroField(cellAmount)
 
-    map[9][0] = 1
-    map[7][2] = 1
+    map = MemoryRandomizer(cellAmount, ZeroField(cellAmount))
    
 
     while running:
@@ -43,8 +64,16 @@ def main():
                 pygame.draw.rect(screen, (255, 0, 0), (x * cellHeight, y * cellWidth, cellHeight, cellWidth), 1, border_radius = 1)
                 
                 pygame.draw.rect(screen, (255, 0, 0), (x * cellHeight, y * cellWidth, cellHeight, cellWidth), 1, border_radius = 1)
-                text_surface, rect = GAME_FONT.render(str(map[x][y]), (255, 0, 0))
-                screen.blit(text_surface, (x * cellHeight + 22.5, y * cellWidth + 5))
+
+                if(map[x][y] == -1):
+                    pygame.draw.rect(screen, (0, 255, 0), (x * cellHeight, y * cellWidth, cellHeight, cellWidth))
+                if((x == selectedX and y == selectedY) or (x == selectedx and y == selectedy) or cheats == True):
+                    if(map[x][y] <= 9):
+                        text_surface, rect = GAME_FONT.render(str(map[x][y]), (255, 0, 0))
+                        screen.blit(text_surface, (x * cellHeight + 22.5, y * cellWidth + 5))
+                    else:
+                        text_surface, rect = GAME_FONT.render(str(map[x][y]), (255, 0, 0))
+                        screen.blit(text_surface, (x * cellHeight + 5, y * cellWidth + 5))
         
         pygame.draw.rect(screen, (255, 255, 255), (xIdx * cellHeight, yIdx * cellWidth, cellHeight, cellWidth), 1, border_radius = 5)
 
@@ -53,23 +82,51 @@ def main():
                     running = False
                 if events.type == pygame.KEYDOWN:
                     if events.key == pygame.K_SPACE:
-                        if(selector):
-                            selector = False
+                        if(selector):  
                             if(map[xIdx][yIdx] == map[selectedX][selectedY]):
-                                map[selectedX][selectedY] = 0
-                                map[xIdx][yIdx] = 0
+                                map[selectedX][selectedY] = -1
+                                map[xIdx][yIdx] = -1
+                            selectedx = xIdx
+                            selectedy = yIdx
+                            selector = False
                         else:
-                            selector = True
-                            selectedX = xIdx
-                            selectedY = yIdx
+                            if(map[xIdx][yIdx] != -1):
+                                selector = True
+                                selectedX = xIdx
+                                selectedY = yIdx
                     elif events.key == pygame.K_LEFT:
                         xIdx -= 1
+                        if(selectedx != -1 and selectedy != - 1):
+                            selectedX = -1
+                            selectedY = -1
+                            selectedx = -1
+                            selectedY = -1
                     elif events.key == pygame.K_RIGHT:
                         xIdx += 1
+                        if(selectedx != -1 and selectedy != - 1):
+                            selectedX = -1
+                            selectedY = -1
+                            selectedx = -1
+                            selectedY = -1
                     elif events.key == pygame.K_UP:
                         yIdx -= 1
+                        if(selectedx != -1 and selectedy != - 1):
+                            selectedX = -1
+                            selectedY = -1
+                            selectedx = -1
+                            selectedY = -1
                     elif events.key == pygame.K_DOWN:
                         yIdx += 1
+                        if(selectedx != -1 and selectedy != - 1):
+                            selectedX = -1
+                            selectedY = -1
+                            selectedx = -1
+                            selectedY = -1
+                    elif events.key == pygame.K_7:
+                        if(cheats):
+                            cheats = False
+                        else:
+                            cheats = True
 
 
 main()
