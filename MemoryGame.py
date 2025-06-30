@@ -83,7 +83,7 @@ def main():
                 if events.type == pygame.KEYDOWN:
                     if events.key == pygame.K_SPACE:
                         if(selector):  
-                            if(map[xIdx][yIdx] == map[selectedX][selectedY]):
+                            if(map[xIdx][yIdx] == map[selectedX][selectedY] and (xIdx != selectedX or yIdx != selectedY)):
                                 map[selectedX][selectedY] = -1
                                 map[xIdx][yIdx] = -1
                             selectedx = xIdx
