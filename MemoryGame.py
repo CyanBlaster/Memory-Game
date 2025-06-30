@@ -45,6 +45,8 @@ def main():
     selectedx = -1
     selectedy = -1
     cheats = False
+    cheatX = -1
+    cheatY = -1
 
     screen = pygame.display.set_mode((width, height))
     running = True
@@ -61,6 +63,11 @@ def main():
         screen.fill((0, 0, 0))
         for y in range(len(map)):
              for x in range(len(map[y])):
+                if(cheats):
+                    if(selectedX != -1 and selectedY != -1 and map[x][y] == map[selectedX][selectedY]):
+                        pygame.draw.rect(screen, (0, 0, 255), (x * cellHeight, y * cellWidth, cellHeight, cellWidth))
+                        pygame.draw.rect(screen, (0, 0, 255), (xIdx * cellHeight, yIdx * cellWidth, cellHeight, cellWidth))
+                        
                 pygame.draw.rect(screen, (255, 0, 0), (x * cellHeight, y * cellWidth, cellHeight, cellWidth), 1, border_radius = 1)
                 
                 pygame.draw.rect(screen, (255, 0, 0), (x * cellHeight, y * cellWidth, cellHeight, cellWidth), 1, border_radius = 1)
@@ -74,7 +81,10 @@ def main():
                     else:
                         text_surface, rect = GAME_FONT.render(str(map[x][y]), (255, 0, 0))
                         screen.blit(text_surface, (x * cellHeight + 5, y * cellWidth + 5))
-        
+                
+            
+
+
         pygame.draw.rect(screen, (255, 255, 255), (xIdx * cellHeight, yIdx * cellWidth, cellHeight, cellWidth), 1, border_radius = 5)
 
         for events in pygame.event.get():
@@ -94,6 +104,7 @@ def main():
                                 selector = True
                                 selectedX = xIdx
                                 selectedY = yIdx
+
                     elif events.key == pygame.K_LEFT:
                         xIdx -= 1
                         if(selectedx != -1 and selectedy != - 1):
