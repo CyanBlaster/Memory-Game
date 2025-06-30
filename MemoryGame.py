@@ -20,6 +20,9 @@ def main():
     cellWidth = width/cellAmount
     xIdx = 0
     yIdx = 0
+    selector = False
+    selectX = 0
+    selectY = 0
 
     screen = pygame.display.set_mode((width, height))
     running = True
@@ -34,6 +37,7 @@ def main():
         # screen.blit(text_surface, (100, 100))
         pygame.display.flip()
         print(map)
+        screen.fill((0, 0, 0))
         for y in range(len(map)):
              for x in range(len(map[y])):
                 pygame.draw.rect(screen, (255, 0, 0), (x * cellHeight, y * cellWidth, cellHeight, cellWidth), 1, border_radius = 1)
@@ -49,7 +53,15 @@ def main():
                     running = False
                 if events.type == pygame.KEYDOWN:
                     if events.key == pygame.K_SPACE:
-                        print("x")
+                        if(selector):
+                            selector = False
+                            if(map[xIdx][yIdx] == map[selectedX][selectedY]):
+                                map[selectedX][selectedY] = 0
+                                map[xIdx][yIdx] = 0
+                        else:
+                            selector = True
+                            selectedX = xIdx
+                            selectedY = yIdx
                     elif events.key == pygame.K_LEFT:
                         xIdx -= 1
                     elif events.key == pygame.K_RIGHT:
